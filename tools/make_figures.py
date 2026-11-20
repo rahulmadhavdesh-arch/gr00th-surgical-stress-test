@@ -1,8 +1,9 @@
-"""Regenerate results/figures/fig_drift_v2.png and fig_vision_use.png from results/.
+"""Regenerate results/figures/fig_drift_v2.png, fig_vision_use.png and fig_accuracy.png from results/.
 
 Inputs: results/summary.json (drift, CIs, noise floor) and results/blank_ci.json
 (blank-camera drift, first 8 steps, mean and 95% episode-bootstrap CI on the 60-frame
-diagnostic subset; derived from the per-frame diagnostics of the run).
+diagnostic subset; derived from the per-frame diagnostics of the run) and results/accuracy_vs_gt.json
+(paired error increase against recorded motion; written by tools/accuracy_vs_gt.py).
 Run from the repository root:  python tools/make_figures.py
 """
 import json
@@ -45,7 +46,7 @@ def fig_drift(slide=False):
         c=st[k][0]; c=c if k!="OCCLUSION" else "#7E7A6E"
         ax.plot([5.04,5.17],[d,yy],color=c,lw=0.8,zorder=2)
         ax.text(5.2,yy,nm[k],va="center",ha="left",fontsize=15,color=c,fontweight="bold" if k=="SMOKE" else "normal")
-    ax.text(0.92,1.215,f"re-seed the clean image: {fl['mean']:.2f} mm  (95% CI {fl['lo']:.2f} to {fl['hi']:.2f})",fontsize=14,color=GREY,va="bottom",ha="left")
+    ax.text(0.92,1.215,f"clean-to-clean re-seed drift: {fl['mean']:.2f} mm  (95% CI {fl['lo']:.2f} to {fl['hi']:.2f})",fontsize=14,color=GREY,va="bottom",ha="left")
     ax.text(0.92,BE[0]+0.012,f"endoscope fully blanked: {BE[0]:.2f} mm",fontsize=14,color=INK,va="bottom",ha="left",fontweight="bold")
     ax.set_xlim(0.85,6.45); ax.set_ylim(0,1.38); ax.set_xticks(xs)
     ax.set_xticks(xs); ax.tick_params(labelsize=15,length=4)
@@ -53,11 +54,11 @@ def fig_drift(slide=False):
     ax.set_ylabel("drift of predicted tool motion (mm)",fontsize=15,labelpad=8)
     ax.spines["bottom"].set_bounds(1,5)
     ax.yaxis.grid(True,color=RULE,lw=0.8); ax.set_axisbelow(True)
-    if not slide: fig.text(0.02,0.975,"Degrading the endoscope view moves the prediction\nno more than re-seeding the model",fontsize=21,fontweight="bold",va="top",ha="left",linespacing=1.15)
+    if not slide: fig.text(0.02,0.975,"Degrading the endoscope view moves the prediction\nno more than clean-to-clean re-seed drift",fontsize=21,fontweight="bold",va="top",ha="left",linespacing=1.15)
     if not slide: fig.text(0.02,0.012,"GR00T-H-N1.7, 400 training frames, first 8 steps, endoscope view corrupted. Smoke band: 95% CI over episodes.\nGrey dashed: Gaussian noise and brightness controls. Blank-endoscope value from a 60-frame subset.",fontsize=10.5,color=GREY,va="bottom")
     if slide:
         for t in list(ax.texts):
-            if "re-seed the clean" in t.get_text(): t.set_text("re-seed: 1.10 mm (95% CI 1.00 to 1.19)"); t.set_fontsize(13)
+            if "clean-to-clean" in t.get_text(): t.set_text("clean-to-clean re-seed: 1.10 mm"); t.set_fontsize(13)
             elif "fully blanked" in t.get_text(): t.set_fontsize(13); t.set_bbox(dict(fc=BG,ec="none",pad=1.5,alpha=0.9))
             elif t.get_text() in ("Gaussian noise","Occlusion","Smoke","Fog","Blood","Glare","Brightness"): t.set_fontsize(14)
         ax.set_xlim(0.85,7.0)
@@ -67,7 +68,7 @@ def fig_drift(slide=False):
 
 # ---------------- fig 2
 def fig_use(slide=False):
-    items=[("re-seed (noise floor)",fl["mean"],fl["lo"],fl["hi"],"#B9B4A6"),
+    items=[("clean-to-clean re-seed",fl["mean"],fl["lo"],fl["hi"],"#B9B4A6"),
            ("blank endoscope",*BE,"#4A5560"),
            ("smoke, s3",*[res["h8|SMOKE"][k][2] for k in("D","Dlo","Dhi")],"#4A5560"),
            ("fog, s3",*[res["h8|FOG"][k][2] for k in("D","Dlo","Dhi")],"#4A5560"),
@@ -90,11 +91,36 @@ def fig_use(slide=False):
     ax.tick_params(axis="x",labelsize=14); ax.tick_params(axis="y",length=0)
     ax.spines["left"].set_visible(False); ax.xaxis.grid(True,color=RULE,lw=0.8); ax.set_axisbelow(True)
     if not slide: fig.text(0.02,0.975,"What actually moves the robot's\npredicted motion",fontsize=21,fontweight="bold",va="top",linespacing=1.15)
-    if not slide: fig.text(0.02,0.012,"GR00T-H-N1.7. Artifacts: 400 frames, mean and 95% CI over episodes. Blank-camera rows: 60-frame subset.\nDashed line: re-seed noise floor. Smoke, fog, occlusion, blood, glare: endoscope view only, severity 3.",fontsize=10.5,color=GREY,va="bottom")
+    if not slide: fig.text(0.02,0.012,"GR00T-H-N1.7. Artifacts: 400 frames, mean and 95% CI over episodes. Blank-camera rows: 60-frame subset.\nDashed line: clean-to-clean re-seed drift. Smoke, fog, occlusion, blood, glare: endoscope view only, severity 3.",fontsize=10.5,color=GREY,va="bottom")
     if slide:
         ax.set_yticklabels([x[0] for x in items][::-1],fontsize=14); ax.set_xlabel("drift, first 8 steps (mm)",fontsize=14)
         ax.set_xlim(0,2.9)
         fig.subplots_adjust(left=0.34,right=0.97,top=0.97,bottom=0.16)
     else: fig.subplots_adjust(left=0.27,right=0.97,top=0.85,bottom=0.2)
     fig.savefig(str(O/"fig_vision_use.png"),dpi=200); plt.close(fig)
-fig_drift(); fig_use()
+
+# ---------------- fig 3: error against recorded motion
+def fig_accuracy(slide=False):
+    A=json.load(open(R/"accuracy_vs_gt.json")); ss=A["single_seed"]; dg=A["diag60"]
+    nm={"SMOKE":"smoke","BLOOD":"blood","FOG":"fog","GLARE":"glare","OCCLUSION":"occlusion","GAUSS":"Gaussian noise","BRIGHTNESS":"brightness"}
+    items=[(f"{nm[k]}, s3",ss[f"{k}|3"]["increase"],ss[f"{k}|3"]["lo"],ss[f"{k}|3"]["hi"],"#4A5560") for k in ("SMOKE","FOG","OCCLUSION","BLOOD","GLARE","GAUSS","BRIGHTNESS")]
+    items+=[("blank endoscope*",dg["blank_endo"]["increase"],dg["blank_endo"]["lo"],dg["blank_endo"]["hi"],"#4A5560"),
+            ("all cameras blank*",dg["blank_all"]["increase"],dg["blank_all"]["lo"],dg["blank_all"]["hi"],ACC)]
+    fig,ax=plt.subplots(figsize=(7.4,5.7) if slide else (9.6,7.0)); n=len(items)
+    for i,(l,v,lo,hi,c) in enumerate(items):
+        yy=n-1-i
+        ax.plot([lo,hi],[yy,yy],color=INK,lw=1.6,zorder=2)
+        for e in (lo,hi): ax.plot([e,e],[yy-0.13,yy+0.13],color=INK,lw=1.6,zorder=2)
+        ax.plot([v],[yy],"o",ms=9,color=c,zorder=3)
+        ax.text(max(hi,0)+0.04,yy,f"{v:+.2f}".replace("-0.00","0.00"),va="center",fontsize=14,color=ACC if c==ACC else INK,fontweight="bold" if c==ACC else "normal",bbox=dict(fc=BG,ec="none",pad=1.5),zorder=5)
+    ax.axvline(0,color=GREY,lw=1.1,zorder=1)
+    ax.set_yticks(range(n)); ax.set_yticklabels([x[0] for x in items][::-1],fontsize=14)
+    ax.set_xlim(-0.15,1.45); ax.set_ylim(-0.6,n-0.4)
+    ax.set_xlabel("increase in error vs recorded motion, first 8 steps (mm)",fontsize=14,labelpad=8)
+    ax.tick_params(axis="x",labelsize=13); ax.tick_params(axis="y",length=0)
+    ax.spines["left"].set_visible(False); ax.xaxis.grid(True,color=RULE,lw=0.8); ax.set_axisbelow(True)
+    fig.text(0.02,0.975,"Artifacts raise error against recorded motion a little;\nlosing all three views raises it far more",fontsize=19,fontweight="bold",va="top",linespacing=1.15)
+    fig.text(0.02,0.012,f"Paired by frame, 95% CI by episode bootstrap. Clean error {A['clean_error']['mean']:.2f} mm. Endoscope view only, 400 frames, offline.\n* 60-frame subset (clean error {dg['clean_error']:.2f} mm). Training frames, synthetic artifacts, no closed loop.",fontsize=10,color=GREY,va="bottom")
+    fig.subplots_adjust(left=0.25,right=0.97,top=0.85,bottom=0.2)
+    fig.savefig(str(O/"fig_accuracy.png"),dpi=200); plt.close(fig)
+fig_drift(); fig_use(); fig_accuracy()

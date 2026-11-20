@@ -1,0 +1,178 @@
+{
+ "n_frames": 400,
+ "n_episodes": 40,
+ "definition": "mean over the first 8 predicted steps of the per-step Euclidean distance (mm) to the recorded end-effector translation, summed over both arms; increase = condition minus clean, paired by frame; 95% CI from 2000 episode-cluster bootstrap resamples",
+ "endoscope_view_only": true,
+ "clean_error": {
+  "mean": 1.4177669499999999,
+  "lo": 1.275232283125,
+  "hi": 1.5727252856249998
+ },
+ "single_seed": {
+  "SMOKE|3": {
+   "error": 1.6065470499999999,
+   "increase": 0.1887801,
+   "lo": 0.125552023125,
+   "hi": 0.24688364000000002
+  },
+  "SMOKE|5": {
+   "error": 1.6579438499999997,
+   "increase": 0.24017689999999997,
+   "lo": 0.171078958125,
+   "hi": 0.3129383293749998
+  },
+  "BLOOD|3": {
+   "error": 1.5388868,
+   "increase": 0.12111984999999999,
+   "lo": 0.04454824562500002,
+   "hi": 0.18637823937499995
+  },
+  "BLOOD|5": {
+   "error": 1.590216825,
+   "increase": 0.172449875,
+   "lo": 0.098746235,
+   "hi": 0.24479694437499996
+  },
+  "FOG|3": {
+   "error": 1.782731025,
+   "increase": 0.36496407499999994,
+   "lo": 0.261651379375,
+   "hi": 0.47637305624999987
+  },
+  "FOG|5": {
+   "error": 1.6266770750000001,
+   "increase": 0.20891012499999997,
+   "lo": 0.133229418125,
+   "hi": 0.2905414125
+  },
+  "GLARE|3": {
+   "error": 1.455351275,
+   "increase": 0.037584324999999995,
+   "lo": 0.020999723749999984,
+   "hi": 0.05469386124999999
+  },
+  "GLARE|5": {
+   "error": 1.5026961,
+   "increase": 0.08492915,
+   "lo": 0.021100448749999983,
+   "hi": 0.13507778874999996
+  },
+  "OCCLUSION|3": {
+   "error": 1.5689122749999997,
+   "increase": 0.151145325,
+   "lo": 0.06625194812499999,
+   "hi": 0.23749736624999995
+  },
+  "OCCLUSION|5": {
+   "error": 1.626240425,
+   "increase": 0.208473475,
+   "lo": 0.12117913374999997,
+   "hi": 0.29841230187499995
+  },
+  "GAUSS|3": {
+   "error": 1.6633486499999999,
+   "increase": 0.24558170000000004,
+   "lo": 0.15834250437499997,
+   "hi": 0.34405839624999973
+  },
+  "GAUSS|5": {
+   "error": 1.6800737000000001,
+   "increase": 0.26230675,
+   "lo": 0.17079112375,
+   "hi": 0.3572756874999999
+  },
+  "BRIGHTNESS|3": {
+   "error": 1.41588295,
+   "increase": -0.0018840000000000074,
+   "lo": -0.015020799375000012,
+   "hi": 0.011981136875
+  },
+  "BRIGHTNESS|5": {
+   "error": 1.4410962,
+   "increase": 0.023329249999999996,
+   "lo": -0.003247751250000012,
+   "hi": 0.050253344374999995
+  }
+ },
+ "four_seed_avg_s3": {
+  "SMOKE": {
+   "error": 1.6168063000000001,
+   "clean_error": 1.4348525625000002,
+   "increase": 0.18195373750000002,
+   "lo": 0.1241192090625,
+   "hi": 0.23323794671874998
+  },
+  "BLOOD": {
+   "error": 1.5483810625,
+   "clean_error": 1.4348525625000002,
+   "increase": 0.11352849999999998,
+   "lo": 0.04424174203124999,
+   "hi": 0.17309376187499997
+  },
+  "FOG": {
+   "error": 1.8117894187499999,
+   "clean_error": 1.4348525625000002,
+   "increase": 0.37693685625,
+   "lo": 0.28424817296875,
+   "hi": 0.4700973673437499
+  },
+  "GLARE": {
+   "error": 1.46719513125,
+   "clean_error": 1.4348525625000002,
+   "increase": 0.03234256874999999,
+   "lo": 0.01477603312499998,
+   "hi": 0.049744021093749986
+  },
+  "OCCLUSION": {
+   "error": 1.57914598125,
+   "clean_error": 1.4348525625000002,
+   "increase": 0.14429341874999999,
+   "lo": 0.0666205328125,
+   "hi": 0.2121978425
+  }
+ },
+ "reseed_comparison_s3": {
+  "SMOKE": {
+   "frac_drift_exceeds_own_reseed_drift": 0.2825,
+   "mean_drift": 0.8284628749999999,
+   "mean_reseed_drift": 1.09623415
+  },
+  "BLOOD": {
+   "frac_drift_exceeds_own_reseed_drift": 0.1525,
+   "mean_drift": 0.6621039999999999,
+   "mean_reseed_drift": 1.09623415
+  },
+  "FOG": {
+   "frac_drift_exceeds_own_reseed_drift": 0.3525,
+   "mean_drift": 0.93016285,
+   "mean_reseed_drift": 1.09623415
+  },
+  "GLARE": {
+   "frac_drift_exceeds_own_reseed_drift": 0.0075,
+   "mean_drift": 0.26615377500000004,
+   "mean_reseed_drift": 1.09623415
+  },
+  "OCCLUSION": {
+   "frac_drift_exceeds_own_reseed_drift": 0.3225,
+   "mean_drift": 0.907438625,
+   "mean_reseed_drift": 1.09623415
+  }
+ },
+ "diag60": {
+  "n_frames": 60,
+  "n_episodes": 40,
+  "clean_error": 1.3907548333333337,
+  "blank_endo": {
+   "error": 1.5263239999999998,
+   "increase": 0.13556916666666666,
+   "lo": 0.021720798199152555,
+   "hi": 0.2531311221902412
+  },
+  "blank_all": {
+   "error": 2.438452666666666,
+   "increase": 1.0476978333333333,
+   "lo": 0.8709802603922717,
+   "hi": 1.2297128214285713
+  }
+ }
+}

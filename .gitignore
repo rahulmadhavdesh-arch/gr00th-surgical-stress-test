@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+env/
+# Notebooks
+.ipynb_checkpoints/
+# Secrets
+.env
+*.env
+!.env.example
+secrets/
+*.secret
+kaggle.json
+# Data and outputs
+data/
+outputs/
+outputs_quick/
+work/
+tests/work*/
+*.npz
+*.zip
+# OS
+.DS_Store

@@ -1,0 +1,13 @@
+{
+  "reference": "float32",
+  "max_diff_mm": 0.005305785634845961,
+  "mean_clean_vs_gt_mm": 2.1636011893860996,
+  "rel": 0.0024522937317997245,
+  "tol": 0.02,
+  "nan_fp16": false,
+  "passed": true,
+  "unit_scale": 1000.0,
+  "window": 8,
+  "final_dtype": "float16",
+  "frames_per_ep": 10
+}

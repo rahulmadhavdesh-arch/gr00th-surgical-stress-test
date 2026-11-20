@@ -1,0 +1,12 @@
+# CPU-side stages (analysis, figures, tests). Pinned to the versions the notebook installs.
+# The notebook builds its own GPU environment (torch==2.7.1, torchvision==0.22.1,
+# transformers==4.57.3 via the GR00T-H repo), so these pins matter only for local and CI runs.
+numpy==1.26.4
+opencv-python-headless==4.10.0.84
+pandas
+pyarrow
+matplotlib
+imageio
+imageio-ffmpeg
+nbformat
+huggingface_hub

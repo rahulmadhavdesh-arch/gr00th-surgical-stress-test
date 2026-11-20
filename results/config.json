@@ -1,0 +1,59 @@
+{
+ "cfg": {
+  "model_id": "nvidia/GR00T-H-N1.7",
+  "data_repo": "nvidia/PhysicalAI-Robotics-Open-H-Embodiment",
+  "n_episodes": 40,
+  "t_per_ep": 10,
+  "horizon": 50,
+  "win_short": 8,
+  "model_hw": [
+   414,
+   236
+  ],
+  "secondary_sevs": [
+   3,
+   5
+  ],
+  "severities": [
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "kinds": [
+   "SMOKE",
+   "BLOOD",
+   "FOG",
+   "GLARE",
+   "OCCLUSION",
+   "GAUSS",
+   "BRIGHTNESS"
+  ],
+  "artifacts": [
+   "SMOKE",
+   "BLOOD",
+   "FOG",
+   "GLARE",
+   "OCCLUSION"
+  ],
+  "controls": [
+   "GAUSS",
+   "BRIGHTNESS"
+  ],
+  "master_seed": 20261116,
+  "bootstrap": 2000,
+  "ckpt_every": 50,
+  "diag_frames": 60,
+  "ensemble_sev": 3,
+  "fp_check_frames": 20,
+  "fp_check_tol": 0.02,
+  "fp32_frames_per_ep": 5,
+  "video_backends": [
+   "torchcodec",
+   "decord",
+   "opencv"
+  ]
+ },
+ "cfg_hash": "99d9c1bda98d1517"
+}

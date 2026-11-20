@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this code or results, please cite them as below."
+title: "Surgical artifact stress test of GR00T-H N1.7"
+type: software
+authors:
+  - family-names: Deshpande
+    given-names: Rahul Madhav
+version: 1.0.0
+date-released: 2026-11-20
+license: Apache-2.0
+repository-code: "https://github.com/rahulmadhavdesh-arch/gr00th-surgical-stress-test"

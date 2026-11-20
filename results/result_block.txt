@@ -1,0 +1,48 @@
+
+==============================================================================
+GR00T-H STRESS RESULT
+==============================================================================
+model nvidia/GR00T-H-N1.7 | dtype float16 | jhu_imerse_dvrk | Surgical/jhu/imerse/nephfat/nephfat
+400 frames, 40 episodes; corrupted view (primary) = endoscope_left; CI = 95% bootstrap by episode (2000)
+frames are GR00T-H TRAINING data; open-loop sensitivity only; corruptions are synthetic approximations
+NaN (frame,condition) pairs excluded: 0
+
+                           8 steps    50 steps
+noise floor (mm)             1.096       3.428
+clean vs GT (mm)             1.418       6.132
+hold-state error (mm)        2.020       5.614
+
+D = translation drift vs clean, same seed (mm); R = D / E_clean (ratio of means); ROBUST = below sampling spread under shared noise
+artifact       D8 s3              CI    R8   D8 s5  D50 s3   R50  D50 s5 flip8 s3  verdict(8 | 50)
+SMOKE          0.828 [ 0.74, 0.93]  0.58   0.998   3.647  0.59   4.380    0.140  ROBUST | ROBUST
+BLOOD          0.662 [ 0.58, 0.75]  0.47   0.864   2.996  0.49   3.865    0.116  ROBUST | ROBUST
+FOG            0.930 [ 0.81, 1.06]  0.66   0.991   3.362  0.55   4.237    0.135  ROBUST | ROBUST
+GLARE          0.266 [ 0.24, 0.30]  0.19   0.512   1.166  0.19   2.325    0.076  ROBUST | ROBUST
+OCCLUSION      0.907 [ 0.82, 1.01]  0.64   1.077   4.184  0.68   4.950    0.159  ROBUST | ROBUST
+GAUSS          0.921 [ 0.82, 1.02]  0.65   1.089   4.054  0.66   4.835    0.166  ROBUST | ROBUST (control)
+BRIGHTNESS     0.155 [ 0.14, 0.17]  0.11   0.268   0.694  0.11   1.237    0.065  ROBUST | ROBUST (control)
+
+VERDICT SMOKE      8-step: ROBUST        (fragile@s3=False, robust@s5=True) | 50-step: ROBUST
+VERDICT BLOOD      8-step: ROBUST        (fragile@s3=False, robust@s5=True) | 50-step: ROBUST
+VERDICT FOG        8-step: ROBUST        (fragile@s3=False, robust@s5=True) | 50-step: ROBUST
+VERDICT GLARE      8-step: ROBUST        (fragile@s3=False, robust@s5=True) | 50-step: ROBUST
+VERDICT OCCLUSION  8-step: ROBUST        (fragile@s3=False, robust@s5=True) | 50-step: ROBUST
+
+VERDICT SMOKE [8-step] NOT SURGICAL-SPECIFIC at s=3: smoke exceeds Gaussian noise and brightness at matched MSE (model-input resolution), CI excl. 0; severities holding: none
+VERDICT SMOKE [50-step] NOT SURGICAL-SPECIFIC at s=3: smoke exceeds Gaussian noise and brightness at matched MSE (model-input resolution), CI excl. 0; severities holding: none
+  s3 8-step: SMOKE-GAUSS -0.092 mm (CI lo -0.179) | SMOKE-BRIGHT +0.673 mm (CI lo +0.593)
+  (BRIGHTNESS is a GR00T-H training augmentation, so low drift under it is expected)
+  matched PSNR at model resolution (dB, s1..s5): 19.6, 15.9, 13.5, 11.5, 10.1
+  ALL-VIEWS secondary (D8 mm at s3 | s5): SMOKE 1.08|1.82; BLOOD 0.74|1.04; FOG 1.18|2.29; GLARE 0.29|0.56; OCCLUSION 1.16|1.75; GAUSS 1.13|1.42; BRIGHTNESS 0.34|0.58
+  hero frame fid 8: mean percentile 50; SMOKE p62, BLOOD p35, FOG p42, GLARE p49, OCCLUSION p61
+SANITY FAIL: 4-seed ensemble clean error 5.767 mm vs hold-state error 5.614 mm at 50 steps (diagnostic only)
+
+EXPLORATORY (not part of the locked verdicts; primary condition, severity 3)
+  ensemble-mean drift (mm): mean over 4 seeds, corrupted vs clean; floor = clean seeds split 2 vs 2
+              floor8  floor50      SMOKE      BLOOD        FOG      GLARE  OCCLUSION
+  8 steps      0.782    2.443      0.796      0.630      0.905      0.257      0.865
+  50 steps     0.782    2.443      3.539      2.909      3.271      1.131      4.092
+  vision-use fraction = artifact drift / blank-endoscope drift, same seed (ratio of means, 95% CI)
+  8 steps   SMOKE 0.90 [0.84,0.96]  BLOOD 0.72 [0.66,0.77]  FOG 1.00 [0.91,1.13]  GLARE 0.29 [0.26,0.32]  OCCLUSION 0.98 [0.93,1.04]
+  50 steps  SMOKE 0.88 [0.82,0.95]  BLOOD 0.73 [0.66,0.79]  FOG 0.82 [0.74,0.89]  GLARE 0.28 [0.25,0.31]  OCCLUSION 1.01 [0.95,1.09]
+==============================================================================
